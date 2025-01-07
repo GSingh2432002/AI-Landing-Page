@@ -13,7 +13,7 @@ Falcon AI is an AI startup landing page built using Next.js and Framer. This pro
 
 ### Prerequisites
 
-- Next.js (v14+)
+- Next.js
 - Framer
 
 ### Installation
