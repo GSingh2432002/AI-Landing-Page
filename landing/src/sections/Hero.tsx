@@ -54,14 +54,28 @@ export default function Hero() {
       </motion.div>
       {/* End of 3rd Ring */}
       <div className="container relative mt-16">
-        <h1 className="text-8xl md:text-[168px] font-semibold tracking-tighter bg-white bg-[radial-gradient(100%_100%_at_top_left,white,white,rgb(74,32,138,.5))] text-transparent bg-clip-text text-center">
+        <motion.h1
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 2, ease: "easeInOut" }}
+          className="text-5xl md:text-[168px] font-semibold tracking-tighter bg-white bg-[radial-gradient(100%_100%_at_top_left,white,white,rgb(74,32,138,.5))] text-transparent bg-clip-text text-center whitespace-nowrap"
+        >
           Falcon AI
-        </h1>
+        </motion.h1>
+
         <p className="text-lg md:text-xl text-white/70 mt-5 text-center max-w-xl mx-auto">
           Falcon AI — where speed meets precision to power smarter decisions.
         </p>
         <div className="flex justify-center mt-5">
-          <Button>Explore More</Button>
+          <motion.div
+            whileHover={{
+              scale: 1.1,
+              boxShadow: "0px 10px 20px rgba(140, 69, 255, 0.5)",
+            }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          >
+            <Button>Explore Falcon</Button>
+          </motion.div>
         </div>
       </div>
     </section>

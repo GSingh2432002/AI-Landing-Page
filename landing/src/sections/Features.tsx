@@ -4,7 +4,6 @@ import {
   DotLottiePlayer,
 } from "@dotlottie/react-player";
 import productImage from "@/assets/product-image.png";
-import Image from "next/image";
 import { ComponentPropsWithoutRef, useEffect, useRef, useState } from "react";
 import {
   animate,
@@ -13,6 +12,7 @@ import {
   useMotionValue,
   ValueAnimationTransition,
 } from "framer-motion";
+
 const tabs = [
   {
     icon: "/assets/lottie/vroom.lottie",
@@ -42,25 +42,23 @@ const tabs = [
 
 const FeatureTab = (
   props: (typeof tabs)[number] &
-    ComponentPropsWithoutRef<"div"> & { selected: boolean },
+    ComponentPropsWithoutRef<"div"> & { selected: boolean }
 ) => {
   const tabRef = useRef<HTMLDivElement>(null);
   const dotLottieRef = useRef<DotLottieCommonPlayer>(null);
 
   const xPercentage = useMotionValue(0);
-
   const yPercentage = useMotionValue(0);
-
-  const maskImage = useMotionTemplate`radial-gradient(80px 80px at ${xPercentage}% ${yPercentage}% ,black,transparent)`;
+  const maskImage = useMotionTemplate`radial-gradient(80px 80px at ${xPercentage}% ${yPercentage}%, black, transparent)`;
 
   useEffect(() => {
     if (!tabRef.current || !props.selected) return;
+
     xPercentage.set(0);
     yPercentage.set(0);
-    const { height, width } = tabRef.current?.getBoundingClientRect();
 
+    const { height, width } = tabRef.current.getBoundingClientRect();
     const circumference = height * 2 + width * 2;
-
     const times = [
       0,
       width / circumference,
@@ -75,6 +73,7 @@ const FeatureTab = (
       repeat: Infinity,
       repeatType: "loop",
     };
+
     animate(xPercentage, [0, 100, 100, 0, 0], options);
     animate(yPercentage, [0, 0, 100, 100, 0], options);
   }, [props.selected]);
@@ -84,6 +83,7 @@ const FeatureTab = (
     dotLottieRef.current.seek(0);
     dotLottieRef.current.play();
   };
+
   return (
     <div
       ref={tabRef}
@@ -117,9 +117,27 @@ const FeatureTab = (
 
 export const Features = () => {
   const [selectedTab, setSelectedTab] = useState(0);
+  const [currentWord, setCurrentWord] = useState("Smarter");
+  const [showWord, setShowWord] = useState(true);
+
+  const words = ["Smarter", "Higher"];
   const backgroundPositionX = useMotionValue(tabs[0].backgroundPositionX);
   const backgroundPositionY = useMotionValue(tabs[0].backgroundPositionY);
   const backgroundSizeX = useMotionValue(tabs[0].backgroundSizeX);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowWord(false); // Start fade-out
+      setTimeout(() => {
+        setCurrentWord((prev) =>
+          prev === "Smarter" ? "Higher" : "Smarter"
+        );
+        setShowWord(true); // Start fade-in
+      }, 500);
+    }, 5000); 
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSelectTab = (index: number) => {
     setSelectedTab(index);
@@ -130,30 +148,41 @@ export const Features = () => {
     animate(
       backgroundSizeX,
       [backgroundSizeX.get(), 100, tabs[index].backgroundSizeX],
-      animateOptions,
+      animateOptions
     );
     animate(
       backgroundPositionX,
       [backgroundPositionX.get(), tabs[index].backgroundPositionX],
-      animateOptions,
+      animateOptions
     );
     animate(
       backgroundPositionY,
       [backgroundPositionY.get(), tabs[index].backgroundPositionY],
-      animateOptions,
+      animateOptions
     );
   };
 
   const backgroundPosition = useMotionTemplate`${backgroundPositionX}% ${backgroundPositionY}%`;
   const backgroundSize = useMotionTemplate`${backgroundSizeX}%`;
+
   return (
     <section className="py-20 md:py-24">
       <div className="container">
         <h2 className="text-5xl md:text-6xl font-medium text-center tracking-tighter">
-          Fly Smarter, Grow Faster with Falcon AI.
+          Fly{" "}
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={{ opacity: showWord ? 1 : 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-primary"
+          >
+            {currentWord}
+          </motion.span>
+          , Grow Faster with Falcon AI.
         </h2>
         <p className="text-white/70 text-lg md:text-xl max-w-2xl mx-auto tracking-tight text-center mt-5">
-          From small startups to large enterprises, our AI-driven tool has revolutionized the way businesses approach SEO.
+          From small startups to large enterprises, our AI-driven tool has
+          revolutionized the way businesses approach SEO.
         </p>
         <div className="mt-10 flex flex-col lg:flex-row gap-3">
           {tabs.map((tab, tabIndex) => (
@@ -179,41 +208,3 @@ export const Features = () => {
     </section>
   );
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
